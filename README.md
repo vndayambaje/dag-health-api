@@ -28,8 +28,7 @@
 - [DAG Health API](#dag-health-api)
   - [Overview](#overview)
   - [Features](#features)
-  - [Architecture](#architecture)
-  - [Project Structure](#project-structure)
+  - [System Overview](#system-overview)
   - [Installation \& Setup](#installation--setup)
   - [Running the API](#running-the-api)
   - [Available Endpoints](#available-endpoints)
@@ -68,43 +67,25 @@ The focus is on clear structure over clever tricks so the code is easy to review
 
 ---
 
-## Architecture
+## System Overview
 
-The architecture is intentionally straightforward: a FastAPI layer that coordinates DAG parsing, traversal, and health checking.
+The API follows a pretty straightforward path. The client sends in a JSON description of the system, which is basically a list of nodes and edges forming a DAG. FastAPI handles the request and hands things off to a small internal layer where the real work happens.
 
-```mermaid
-flowchart LR
+First, I run the input through a couple of Pydantic models just to make sure the structure is sane; things like missing fields or invalid links get caught early. Once the JSON validates, I use NetworkX to build the actual directed graph. I’m not doing anything fancy here; NetworkX just saves me from re-implementing adjacency lists and topological traversal logic.
 
-  C[Client (curl / browser)] -->|JSON DAG| A[FastAPI App]
+The health check part is asynchronous on purpose. Each node simulates a “service check,” and I run them in parallel using asyncio.gather so the whole graph doesn’t get blocked waiting on one slow component. Even though the checks are fake (no real services), the pattern is the same as what you’d do in production: fire off async probes and aggregate the results.
 
-  subgraph S[Service Layer]
-    A --> M[Models (Pydantic)]
-    A --> G[Graph Engine (DAG builder)]
-    A --> H[Health Engine (async checks)]
-  end
+When everything completes, the API exposes multiple output formats depending on the endpoint:
 
-  G --> NX[NetworkX DAG]
-  H --> R[(Results Store, in-memory)]
+- JSON for programmatic use,
 
-  A -->|JSON / HTML / PNG| C
-```
+- a basic HTML table for readability,
 
+- and optionally a PNG version of the DAG with failed nodes highlighted in red.
+The graph rendering uses NetworkX plus Matplotlib, but I keep it minimal.
 
-## Project Structure
+All work is done in memory, no database, and no caching because the assignment doesn’t need persistence. The whole thing is structured to match the requirements: load a DAG, traverse it breadth-first, run async health checks, and surface the final system state in different formats.
 
-```
-dag-health-api/
-├── app/
-│   ├── graph.py        # DAG parsing + level grouping
-│   ├── health.py       # Async health check logic
-│   ├── main.py         # FastAPI endpoints and wiring
-│   └── models.py       # Pydantic request/response models
-├── tests/
-│   └── test_basic.py   # Basic sanity test
-├── sample_dag.json     # Example DAG for testing
-├── pyproject.toml      # Poetry configuration
-└── README.md
-```
 ## Installation & Setup
 This project uses Poetry to manage dependencies.
 
