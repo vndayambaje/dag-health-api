@@ -1,0 +1,9 @@
+# envs & caches
+.venv/
+__pycache__/
+*.pyc
+
+# os/editor
+.DS_Store
+*.swp
+
