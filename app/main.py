@@ -8,6 +8,7 @@ from typing import Dict
 from .models import GraphModel
 from .graph import DAG
 from . import health as healthlib
+from pathlib import Path
 
 
 app = FastAPI(title="DAG Health API", version="1.0.0")
@@ -24,13 +25,14 @@ app.add_middleware(
 
 @app.get("/", response_class=HTMLResponse)
 def index():
-    # quick landing page so someone hitting the root knows what to do
+    # simple landing page so anyone hitting the root knows the key endpoints
     return """
     <h3>DAG Health API</h3>
     <ul>
-      <li>POST <code>/health/raw</code> — JSON in, JSON out</li>
-      <li>POST <code>/health/overall</code> — JSON in, HTML table</li>
-      <li>POST <code>/graph/image</code> — JSON in, PNG image (optional)</li>
+      <li>POST <code>/health/raw</code> — JSON in, JSON out (per-node results)</li>
+      <li>POST <code>/health/overall</code> — JSON in, HTML table of full system health</li>
+      <li>GET <code>/health/table</code> — quick browser-friendly HTML table using sample_dag.json</li>
+      <li>POST <code>/graph/image</code> — JSON in, PNG image of DAG (optional)</li>
     </ul>
     """
 
@@ -131,3 +133,46 @@ async def graph_image(graph: GraphModel):
     buf.seek(0)
 
     return StreamingResponse(buf, media_type="image/png")
+
+@app.get("/health/table", response_class=HTMLResponse)
+async def health_table_view():
+    """
+    Convenience endpoint that loads sample_dag.json and renders the same HTML table
+    as /health/overall. This is only for easy viewing in a browser (GET instead of POST).
+    """
+    import json
+    from pathlib import Path
+
+    sample_path = Path("sample_dag.json")
+    if not sample_path.exists():
+        return HTMLResponse("<h3>Error: sample_dag.json not found.</h3>", status_code=500)
+
+    # Load sample DAG
+    data = json.loads(sample_path.read_text())
+    graph = GraphModel(**data)
+
+    # Use THE SAME LOGIC as /health/overall
+    result = await health_raw(graph)
+
+    # Build the table rows
+    rows = "".join(
+        f"<tr><td>{nid}</td><td>{r['status']}</td><td>{r['latency_ms']} ms</td><td>{r.get('error','')}</td></tr>"
+        for nid, r in sorted(result["results"].items())
+    )
+
+    html = f"""
+    <h3>Overall system: {result['overall']}</h3>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Status</th>
+          <th>Latency</th>
+          <th>Error</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+    """
+
+    return HTMLResponse(html)

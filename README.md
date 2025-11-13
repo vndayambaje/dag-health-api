@@ -224,6 +224,38 @@ curl -X POST http://127.0.0.1:8000/graph/image \
 A valid PNG usually falls in the **40–150 KB** range.
 A very small file (like ~20 bytes) often means an error response (e.g. wrong HTTP method).
 
+**GET** ```/health/table```
+
+Renders a browser-friendly HTML table using ```sample_dag.json```.
+
+This endpoint exists so you can quickly view the system-health output without crafting a POST request.
+
+It uses the same logic as /health/overall, but loads the sample DAG automatically.
+
+**Example (just open in a browser):**
+
+http://127.0.0.1:8000/health/table
+
+
+**Example rendered output (layout varies):**
+
+**Overall system: healthy**
+| Component	| Status	| Latency	| Error |
+|-----------|---------|---------|-------|
+| Step 1	| healthy	| 19 ms | 	
+| Step 10	| healthy	| 101 ms |	
+| Step 11	| healthy	| 94 ms |
+| Step 2	| healthy	| 115 ms |
+| Step 3	| healthy	| 43 ms |	
+| Step 4	| healthy	| 101 ms |	
+| Step 5	| healthy	| 29 ms	 |
+| Step 6	| healthy	| 106 ms |	
+| Step 7	| healthy	| 90 ms |	
+| Step 8	| healthy	| 96 ms |	
+| Step 9	| healthy	| 59 ms |	
+
+
+
 ## Testing With Pytest
 
 Tests live under tests/.
