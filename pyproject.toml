@@ -2,7 +2,7 @@
 name = "dag-health-api"
 version = "0.1.0"
 description = "FastAPI service that checks health of DAG components asynchronously (level-by-level BFS)."
-authors = ["Victor Ndayambaje vndayambaje@gmail.com>"]
+authors = ["Victor Ndayambaje <vndayambaje@gmail.com>"]
 readme = "README.md"
 packages = [{ include = "app" }]
 

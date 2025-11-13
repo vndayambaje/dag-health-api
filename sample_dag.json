@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {"id": "Step 1"},
+    {"id": "Step 2"},
+    {"id": "Step 3"},
+    {"id": "Step 4"},
+    {"id": "Step 5"},
+    {"id": "Step 6"},
+    {"id": "Step 7"},
+    {"id": "Step 8"},
+    {"id": "Step 9"},
+    {"id": "Step 10"},
+    {"id": "Step 11"}
+  ],
+  "edges": [
+    {"from": "Step 1", "to": "Step 2"},
+    {"from": "Step 2", "to": "Step 3"},
+    {"from": "Step 2", "to": "Step 4"},
+    {"from": "Step 3", "to": "Step 5"},
+    {"from": "Step 3", "to": "Step 7"},
+    {"from": "Step 5", "to": "Step 6"},
+    {"from": "Step 7", "to": "Step 8"},
+    {"from": "Step 6", "to": "Step 10"},
+    {"from": "Step 8", "to": "Step 10"},
+    {"from": "Step 9", "to": "Step 10"},
+    {"from": "Step 10", "to": "Step 11"},
+    {"from": "Step 4", "to": "Step 9"}
+  ]
+}

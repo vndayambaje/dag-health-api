@@ -11,7 +11,7 @@ class NodeModel(BaseModel):
 
 class EdgeModel(BaseModel):
     # using alias so JSON uses "from" but we don't shadow the keyword in Python
-    _from: str = Field(..., alias="from")
+    source: str = Field(..., alias="from")
     to: str
 
 
