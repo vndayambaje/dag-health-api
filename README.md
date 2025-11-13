@@ -57,14 +57,14 @@ The focus is on clear structure over clever tricks so the code is easy to review
 
 ## Features
 
-- ✅ DAG definition via JSON (`nodes` + `edges`)
-- ✅ Validation that all edges reference existing nodes
-- ✅ Level-based traversal so dependencies are checked first
-- ✅ Async health checks with simulated latency
-- ✅ JSON endpoint for programmatic consumers
-- ✅ HTML endpoint for quick manual inspection
-- ✅ PNG graph endpoint with colored nodes (healthy/unhealthy)
-- ✅ Minimal but useful pytest-based test
+-  DAG definition via JSON (`nodes` + `edges`)
+-  Validation that all edges reference existing nodes
+-  Level-based traversal so dependencies are checked first
+-  Async health checks with simulated latency
+-  JSON endpoint for programmatic consumers
+-  HTML endpoint for quick manual inspection
+-  PNG graph endpoint with colored nodes (healthy/unhealthy)
+-  Minimal but useful pytest-based test
 
 ---
 
@@ -74,6 +74,7 @@ The architecture is intentionally straightforward: a FastAPI layer that coordina
 
 ```mermaid
 flowchart LR
+
     C[Client<br/>(curl / browser)] -->|JSON DAG| A[FastAPI App]
 
     subgraph S[Service Layer]
@@ -95,6 +96,7 @@ flowchart LR
     class G,H comp
     class NX dag
 ```
+
 ## Project Structure
 
 ```
