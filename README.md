@@ -83,7 +83,7 @@ flowchart LR
     end
 
     G --> NX[NetworkX DAG]
-    H --> R[(Results Store<br/in-memory)]
+    H --> R[(Results Store<br/>in-memory)]
 
     A -->|JSON / HTML / PNG| C
 
