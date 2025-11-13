@@ -20,7 +20,7 @@
     <span style="font-size:80px; font-weight:bold; margin: 0 20px;">+</span>
     <!-- PLUS -->
     <!-- DAG Icon -->
-    <img src="dag.png" width="120"/>
+    <img src="https://miro.medium.com/v2/resize:fit:140/format:webp/1*JVNNslvkfBHazu-Wnx1vSg.png"/>
 </p>
 
 ---
@@ -75,27 +75,20 @@ The architecture is intentionally straightforward: a FastAPI layer that coordina
 ```mermaid
 flowchart LR
 
-    C[Client<br/>(curl / browser)] -->|JSON DAG| A[FastAPI App]
+  C[Client (curl / browser)] -->|JSON DAG| A[FastAPI App]
 
-    subgraph S[Service Layer]
-        A --> M[Models<br/>(Pydantic)]
-        A --> G[Graph Engine<br/>(DAG builder)]
-        A --> H[Health Engine<br/>(async checks)]
-    end
+  subgraph S[Service Layer]
+    A --> M[Models (Pydantic)]
+    A --> G[Graph Engine (DAG builder)]
+    A --> H[Health Engine (async checks)]
+  end
 
-    G --> NX[NetworkX DAG]
-    H --> R[(Results Store<br/>in-memory)]
+  G --> NX[NetworkX DAG]
+  H --> R[(Results Store, in-memory)]
 
-    A -->|JSON / HTML / PNG| C
-
-    classDef svc fill:#e3f2fd,stroke:#90caf9,stroke-width:1px;
-    classDef comp fill:#fffde7,stroke:#fdd835,stroke-width:1px;
-    classDef dag fill:#e8f5e9,stroke:#81c784,stroke-width:1px;
-
-    class S svc
-    class G,H comp
-    class NX dag
+  A -->|JSON / HTML / PNG| C
 ```
+
 
 ## Project Structure
 
